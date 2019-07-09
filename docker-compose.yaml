@@ -1,0 +1,13 @@
+version: '3.2'
+services:
+  proxy:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: ./app -proxy-url=http://backend:8080
+    ports:
+      - "8080:8080"
+    links:
+      - backend
+  backend:
+    image: joeelliott/sample-netcore-app
