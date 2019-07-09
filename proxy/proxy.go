@@ -19,9 +19,12 @@ func NewReverseProxy(urlString string) *ReverseProxy {
 		return nil
 	}
 
+	p := httputil.NewSingleHostReverseProxy(url)
+	p.Transport = &PluggableTransport{}
+
 	return &ReverseProxy{
 		url:   url,
-		proxy: httputil.NewSingleHostReverseProxy(url),
+		proxy: p,
 	}
 }
 
