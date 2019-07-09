@@ -14,11 +14,13 @@ import (
 var (
 	proxyUrl      string
 	listenAddress string
+	redisAddress  string
 )
 
 func init() {
 	flag.StringVar(&proxyUrl, "proxy-url", "http://localhost:8081", "The address to listen on for Prometheus scrapes.")
 	flag.StringVar(&listenAddress, "listen-address", ":8080", "The address to listen on for Prometheus scrapes.")
+	flag.StringVar(&redisAddress, "redis-address", "redis:6379", "The address to communicate to redis on.")
 }
 
 func main() {
@@ -29,6 +31,7 @@ func main() {
 	transport.AddHandler(handlers.MetricsHandlerFactory)
 	transport.AddHandler(handlers.TimingHandlerFactory)
 	transport.AddHandler(handlers.LoggingHandlerFactory)
+	transport.AddHandler(handlers.CachingHandlerFactoryFactory(redisAddress))
 	transport.BuildHandlers()
 
 	proxy := proxy.NewReverseProxy(proxyUrl, transport)

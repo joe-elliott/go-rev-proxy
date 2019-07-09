@@ -11,3 +11,5 @@ services:
       - backend
   backend:
     image: joeelliott/sample-netcore-app
+  redis:
+    image: redis
