@@ -24,6 +24,7 @@ func main() {
 
 	transport := &proxy.PluggableTransport{}
 
+	transport.AddHandler(handlers.TimingHandlerFactory)
 	transport.AddHandler(handlers.LoggingHandlerFactory)
 	transport.BuildHandlers()
 
