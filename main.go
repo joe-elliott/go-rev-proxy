@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"go-rev-proxy/handlers"
 	"go-rev-proxy/proxy"
 )
 
@@ -21,7 +22,12 @@ func init() {
 func main() {
 	flag.Parse()
 
-	proxy := proxy.NewReverseProxy(proxyUrl)
+	transport := &proxy.PluggableTransport{}
+
+	transport.AddHandler(handlers.LoggingHandlerFactory)
+	transport.BuildHandlers()
+
+	proxy := proxy.NewReverseProxy(proxyUrl, transport)
 
 	http.HandleFunc("/", proxy.Handler)
 	log.Fatal(http.ListenAndServe(listenAddress, nil))

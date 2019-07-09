@@ -11,7 +11,7 @@ type ReverseProxy struct {
 	proxy *httputil.ReverseProxy
 }
 
-func NewReverseProxy(urlString string) *ReverseProxy {
+func NewReverseProxy(urlString string, transport http.RoundTripper) *ReverseProxy {
 	// jpe - return err
 	url, err := url.Parse(urlString)
 
@@ -20,7 +20,7 @@ func NewReverseProxy(urlString string) *ReverseProxy {
 	}
 
 	p := httputil.NewSingleHostReverseProxy(url)
-	p.Transport = &PluggableTransport{}
+	p.Transport = transport
 
 	return &ReverseProxy{
 		url:   url,
