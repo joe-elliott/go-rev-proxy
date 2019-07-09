@@ -7,6 +7,8 @@ import (
 
 	"go-rev-proxy/handlers"
 	"go-rev-proxy/proxy"
+
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 var (
@@ -30,6 +32,7 @@ func main() {
 
 	proxy := proxy.NewReverseProxy(proxyUrl, transport)
 
+	http.Handle("/metrics", promhttp.Handler())
 	http.HandleFunc("/", proxy.Handler)
 	log.Fatal(http.ListenAndServe(listenAddress, nil))
 }
