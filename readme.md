@@ -8,8 +8,16 @@ After cloning the repo run `docker-compose build && docker-compose up` to build 
 
 ```
 $ curl http://localhost:8080/api/fibonacci?pos=10000
+2132534333
 $ curl http://localhost:8080/api/echo?echo=test
+test
 ```
+
+#### OpenTracing
+
+Navigate to the Jaeger UI at `http://localhost:16686/` to see some traces:
+
+![jaeger screenshot](./docs/jaeger.png)
 
 #### Prometheus Metrics
 
@@ -38,19 +46,13 @@ Logging shows the impact of caching
 ```
 proxy_1    | Starting Request http://backend:8080/api/echo?echo=test
 proxy_1    | Caching: Miss http://backend:8080/api/echo?echo=test
-proxy_1    | 2019/07/10 02:39:58 HTTPRequest took 11.4113ms
 proxy_1    | Ending Request http://backend:8080/api/echo?echo=test
+proxy_1    | 2019/07/10 02:39:58 HTTPRequest took 11.4113ms
 proxy_1    | Starting Request http://backend:8080/api/echo?echo=test
 proxy_1    | Caching: Hit http://backend:8080/api/echo?echo=test
 proxy_1    | Ending Request http://backend:8080/api/echo?echo=test
 proxy_1    | 2019/07/10 02:39:58 HTTPRequest took 1.0331ms
 ```
-
-#### OpenTracing
-
-Navigate to the Jaeger UI at `http://localhost:16686/` to see some traces:
-
-[jaeger screenshot](./docs/jaeger.png)
 
 ### Final Thoughts
 
