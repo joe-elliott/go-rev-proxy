@@ -13,6 +13,7 @@ type PluggableTransport struct {
 
 type TransportHandlerContext struct {
 	CurrentSpan opentracing.Span
+	Tracer      opentracing.Tracer
 }
 
 type TransportHandler func(request *http.Request, ctx *TransportHandlerContext) (*http.Response, error)
@@ -42,7 +43,9 @@ func (t *PluggableTransport) BuildHandlers() {
 }
 
 func finalHandler(request *http.Request, ctx *TransportHandlerContext) (*http.Response, error) {
-	response, err := http.DefaultTransport.RoundTrip(request)
 
-	return response, err
+	span := ctx.Tracer.StartSpan("BackendRequest", opentracing.ChildOf(ctx.CurrentSpan.Context()))
+	defer span.Finish()
+
+	return http.DefaultTransport.RoundTrip(request)
 }

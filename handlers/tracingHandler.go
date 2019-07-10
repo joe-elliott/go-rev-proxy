@@ -37,6 +37,7 @@ func TracingHandlerFactory(serviceName string) proxy.TransportHandlerFactory {
 			defer span.Finish()
 
 			ctx.CurrentSpan = span
+			ctx.Tracer = tracer
 
 			return next(request, ctx)
 		}

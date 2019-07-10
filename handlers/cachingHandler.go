@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/opentracing/opentracing-go"
 )
 
 func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
@@ -26,7 +27,12 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
 			key := genKey(request.URL)
+
+			span := ctx.Tracer.StartSpan("CacheGet", opentracing.ChildOf(ctx.CurrentSpan.Context()))
+
 			val, err := client.Get(key).Result()
+
+			span.Finish()
 
 			if err == redis.Nil {
 				fmt.Println("Caching: Miss", key)
@@ -39,7 +45,6 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 				return resp, err
 			}
 
-			// save in redis
 			resp, err := next(request, ctx)
 
 			if err != nil {
@@ -52,8 +57,9 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 				return nil, err
 			}
 
-			// ignore set error.  we'll just store it next time
+			span = ctx.Tracer.StartSpan("CacheSet", opentracing.ChildOf(ctx.CurrentSpan.Context()))
 			client.Set(key, string(respBytes), 60*time.Second).Err()
+			span.Finish()
 
 			return resp, err
 		}
