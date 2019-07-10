@@ -4,6 +4,7 @@ import (
 	"go-rev-proxy/proxy"
 	"net/http"
 
+	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 )
@@ -32,7 +33,7 @@ func TracingHandlerFactoryFactory(serviceName string) proxy.TransportHandlerFact
 
 		return func(request *http.Request) (*http.Response, error) {
 
-			span := tracer.StartSpan("Get " + request.URL.String())
+			span := tracer.StartSpan("HTTPRequest", opentracing.Tag{"request", request.URL.String()})
 			defer span.Finish()
 
 			return next(request)
