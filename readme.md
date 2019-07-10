@@ -56,4 +56,4 @@ proxy_1    | 2019/07/10 02:39:58 HTTPRequest took 1.0331ms
 
 ### Final Thoughts
 
-Overall this turned into a fun project that allowed for some basic exploration of go, caching, tracing and other technologies.  This code should never be used in any real world scenario.  However, if you're interested in some of the technologies you may find some useful sample code buried in here.
+Overall this turned into a fun project that allowed for some basic exploration of go, caching, tracing and other technologies.  This code should never be used in any real world scenario.  However, if you're interested in doing similar things you may find some useful sample code buried in here.
