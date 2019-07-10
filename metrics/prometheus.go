@@ -3,7 +3,7 @@ package metrics
 import "github.com/prometheus/client_golang/prometheus"
 
 const (
-	namespace = "cert_exporter"
+	namespace = "go_rev_proxy"
 )
 
 var (
