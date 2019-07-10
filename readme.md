@@ -13,13 +13,13 @@ $ curl http://localhost:8080/api/echo?echo=test
 test
 ```
 
-#### OpenTracing
+### OpenTracing
 
 Navigate to the Jaeger UI at `http://localhost:16686/` to see some traces:
 
 ![jaeger screenshot](./docs/jaeger.png)
 
-#### Prometheus Metrics
+### Prometheus Metrics
 
 Prometheus metrics are available in the usual spot:
 
@@ -39,7 +39,7 @@ go_rev_proxy_requests_latency_ms_sum{path="/api/fibonacci"} 303
 go_rev_proxy_requests_latency_ms_count{path="/api/fibonacci"} 6
 ```
 
-#### Redis
+### Redis
 
 Logging shows the impact of caching
 
