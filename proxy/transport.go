@@ -12,7 +12,7 @@ type PluggableTransport struct {
 }
 
 type TransportHandlerContext struct {
-	CurrentSpan *opentracing.Span
+	CurrentSpan opentracing.Span
 }
 
 type TransportHandler func(request *http.Request, ctx *TransportHandlerContext) (*http.Response, error)

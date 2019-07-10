@@ -36,6 +36,8 @@ func TracingHandlerFactory(serviceName string) proxy.TransportHandlerFactory {
 			span := tracer.StartSpan("HTTPRequest", opentracing.Tag{"request", request.URL.String()})
 			defer span.Finish()
 
+			ctx.CurrentSpan = span
+
 			return next(request, ctx)
 		}
 	}
