@@ -8,17 +8,20 @@ import (
 	"go-rev-proxy/metrics"
 )
 
-func MetricsHandlerFactory(next proxy.TransportHandler) proxy.TransportHandler {
+func MetricsHandlerFactory() proxy.TransportHandlerFactory {
 
-	return func(request *http.Request) (*http.Response, error) {
-		start := time.Now()
+	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		resp, err := next(request)
+		return func(request *http.Request) (*http.Response, error) {
+			start := time.Now()
 
-		elapsed := time.Since(start)
+			resp, err := next(request)
 
-		metrics.RequestLatencyMilliseconds.WithLabelValues(request.URL.Path).Observe(float64(elapsed / time.Millisecond))
+			elapsed := time.Since(start)
 
-		return resp, err
+			metrics.RequestLatencyMilliseconds.WithLabelValues(request.URL.Path).Observe(float64(elapsed / time.Millisecond))
+
+			return resp, err
+		}
 	}
 }

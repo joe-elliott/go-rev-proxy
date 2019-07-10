@@ -9,7 +9,7 @@ import (
 	"github.com/uber/jaeger-client-go/config"
 )
 
-func TracingHandlerFactoryFactory(serviceName string) proxy.TransportHandlerFactory {
+func TracingHandlerFactory(serviceName string) proxy.TransportHandlerFactory {
 
 	cfg, err := config.FromEnv()
 

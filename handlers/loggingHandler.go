@@ -6,16 +6,19 @@ import (
 	"net/http"
 )
 
-func LoggingHandlerFactory(next proxy.TransportHandler) proxy.TransportHandler {
+func LoggingHandlerFactory() proxy.TransportHandlerFactory {
 
-	return func(request *http.Request) (*http.Response, error) {
+	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		fmt.Printf("Starting Request %v\n", request.URL)
+		return func(request *http.Request) (*http.Response, error) {
 
-		resp, err := next(request)
+			fmt.Printf("Starting Request %v\n", request.URL)
 
-		fmt.Printf("Ending Request %v\n", request.URL)
+			resp, err := next(request)
 
-		return resp, err
+			fmt.Printf("Ending Request %v\n", request.URL)
+
+			return resp, err
+		}
 	}
 }

@@ -28,11 +28,11 @@ func main() {
 
 	transport := &proxy.PluggableTransport{}
 
-	transport.AddHandler(handlers.TracingHandlerFactoryFactory("go-rev-proxy"))
-	transport.AddHandler(handlers.MetricsHandlerFactory)
-	transport.AddHandler(handlers.TimingHandlerFactory)
-	transport.AddHandler(handlers.LoggingHandlerFactory)
-	transport.AddHandler(handlers.CachingHandlerFactoryFactory(redisAddress))
+	transport.AddHandler(handlers.TracingHandlerFactory("go-rev-proxy"))
+	transport.AddHandler(handlers.MetricsHandlerFactory())
+	transport.AddHandler(handlers.TimingHandlerFactory())
+	transport.AddHandler(handlers.LoggingHandlerFactory())
+	transport.AddHandler(handlers.CachingHandlerFactory(redisAddress))
 	transport.BuildHandlers()
 
 	proxy := proxy.NewReverseProxy(proxyUrl, transport)

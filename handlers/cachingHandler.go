@@ -13,7 +13,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-func CachingHandlerFactoryFactory(cacheAddress string) proxy.TransportHandlerFactory {
+func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 
 	return func(next proxy.TransportHandler) proxy.TransportHandler {
 

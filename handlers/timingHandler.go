@@ -7,12 +7,15 @@ import (
 	"time"
 )
 
-func TimingHandlerFactory(next proxy.TransportHandler) proxy.TransportHandler {
+func TimingHandlerFactory() proxy.TransportHandlerFactory {
 
-	return func(request *http.Request) (*http.Response, error) {
-		defer timeTrack(time.Now())
+	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		return next(request)
+		return func(request *http.Request) (*http.Response, error) {
+			defer timeTrack(time.Now())
+
+			return next(request)
+		}
 	}
 }
 
