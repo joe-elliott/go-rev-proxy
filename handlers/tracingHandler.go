@@ -4,7 +4,7 @@ import (
 	"go-rev-proxy/proxy"
 	"net/http"
 
-	"github.com/opentracing-contrib/go-stdlib/nethttp"
+	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
 )
 
@@ -16,6 +16,10 @@ func TracingHandlerFactoryFactory(serviceName string) proxy.TransportHandlerFact
 		panic(err)
 	}
 
+	cfg.Sampler = &config.SamplerConfig{
+		Type:  jaeger.SamplerTypeConst,
+		Param: 1,
+	}
 	cfg.ServiceName = serviceName
 
 	tracer, _, err := cfg.NewTracer()
@@ -28,13 +32,10 @@ func TracingHandlerFactoryFactory(serviceName string) proxy.TransportHandlerFact
 
 		return func(request *http.Request) (*http.Response, error) {
 
-			request, ht = nethttp.TraceRequest(tracer, request, nethttp.OperationName("HTTP GET: "+request.URL.String()))
+			span := tracer.StartSpan("Get " + request.URL.String())
+			defer span.Finish()
 
-			err, resp := next(request)
-
-			ht.Finish()
-
-			return err, resp
+			return next(request)
 		}
 	}
 }
