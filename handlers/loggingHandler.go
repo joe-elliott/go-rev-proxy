@@ -10,11 +10,11 @@ func LoggingHandlerFactory() proxy.TransportHandlerFactory {
 
 	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		return func(request *http.Request) (*http.Response, error) {
+		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
 			fmt.Printf("Starting Request %v\n", request.URL)
 
-			resp, err := next(request)
+			resp, err := next(request, ctx)
 
 			fmt.Printf("Ending Request %v\n", request.URL)
 

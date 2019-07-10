@@ -11,10 +11,10 @@ func TimingHandlerFactory() proxy.TransportHandlerFactory {
 
 	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		return func(request *http.Request) (*http.Response, error) {
+		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 			defer timeTrack(time.Now())
 
-			return next(request)
+			return next(request, ctx)
 		}
 	}
 }

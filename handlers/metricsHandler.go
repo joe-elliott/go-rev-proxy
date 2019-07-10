@@ -12,10 +12,10 @@ func MetricsHandlerFactory() proxy.TransportHandlerFactory {
 
 	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		return func(request *http.Request) (*http.Response, error) {
+		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 			start := time.Now()
 
-			resp, err := next(request)
+			resp, err := next(request, ctx)
 
 			elapsed := time.Since(start)
 

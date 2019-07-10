@@ -31,12 +31,12 @@ func TracingHandlerFactory(serviceName string) proxy.TransportHandlerFactory {
 
 	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
-		return func(request *http.Request) (*http.Response, error) {
+		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
 			span := tracer.StartSpan("HTTPRequest", opentracing.Tag{"request", request.URL.String()})
 			defer span.Finish()
 
-			return next(request)
+			return next(request, ctx)
 		}
 	}
 }

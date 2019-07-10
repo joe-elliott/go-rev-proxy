@@ -23,7 +23,7 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 			DB:       0,  // use default DB
 		})
 
-		return func(request *http.Request) (*http.Response, error) {
+		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
 			key := genKey(request.URL)
 			val, err := client.Get(key).Result()
@@ -40,7 +40,7 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 			}
 
 			// save in redis
-			resp, err := next(request)
+			resp, err := next(request, ctx)
 
 			if err != nil {
 				return nil, err

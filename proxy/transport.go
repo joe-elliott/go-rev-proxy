@@ -2,6 +2,8 @@ package proxy
 
 import (
 	"net/http"
+
+	"github.com/opentracing/opentracing-go"
 )
 
 type PluggableTransport struct {
@@ -9,13 +11,17 @@ type PluggableTransport struct {
 	rootHandler TransportHandler
 }
 
-type TransportHandler func(request *http.Request) (*http.Response, error)
+type TransportHandlerContext struct {
+	CurrentSpan *opentracing.Span
+}
+
+type TransportHandler func(request *http.Request, ctx *TransportHandlerContext) (*http.Response, error)
 
 type TransportHandlerFactory func(next TransportHandler) TransportHandler
 
 func (t *PluggableTransport) RoundTrip(request *http.Request) (*http.Response, error) {
 
-	response, err := t.rootHandler(request)
+	response, err := t.rootHandler(request, &TransportHandlerContext{})
 
 	return response, err
 }
@@ -35,7 +41,7 @@ func (t *PluggableTransport) BuildHandlers() {
 	t.rootHandler = currentHandler
 }
 
-func finalHandler(request *http.Request) (*http.Response, error) {
+func finalHandler(request *http.Request, ctx *TransportHandlerContext) (*http.Response, error) {
 	response, err := http.DefaultTransport.RoundTrip(request)
 
 	return response, err
