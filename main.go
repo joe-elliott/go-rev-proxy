@@ -28,6 +28,7 @@ func main() {
 
 	transport := &proxy.PluggableTransport{}
 
+	transport.AddHandler(handlers.TracingHandlerFactoryFactory("go-rev-proxy"))
 	transport.AddHandler(handlers.MetricsHandlerFactory)
 	transport.AddHandler(handlers.TimingHandlerFactory)
 	transport.AddHandler(handlers.LoggingHandlerFactory)

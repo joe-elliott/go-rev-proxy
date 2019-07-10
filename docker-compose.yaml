@@ -7,9 +7,14 @@ services:
     command: ./app -proxy-url=http://backend:8080
     ports:
       - "8080:8080"
-    links:
-      - backend
+    environment:
+      - JAEGER_AGENT_HOST=jaeger
+      - JAEGER_AGENT_PORT=6831
   backend:
     image: joeelliott/sample-netcore-app
   redis:
     image: redis
+  jaeger:
+    image: jaegertracing/all-in-one:1.8
+    ports:
+      - "16686:16686"
