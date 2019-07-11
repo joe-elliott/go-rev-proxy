@@ -64,3 +64,4 @@ Improvements that could be made:
 - Set outgoing OpenTracing headers
 - Add distributed rate limiting through Redis
 - Make caching, tracing, etc. configurable
+- Only cache gets
