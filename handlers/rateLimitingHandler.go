@@ -46,9 +46,6 @@ func RateLimitingHandlerFactory(cacheAddress string, requestsPerMinute int64) pr
 			count := incr.Val()
 
 			if count > requestsPerMinute {
-				/*
-					jpe - not working - return 429?
-				*/
 				return &http.Response{
 					Status:        "429",
 					StatusCode:    429,
