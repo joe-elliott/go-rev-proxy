@@ -1,6 +1,6 @@
 # go-rev-proxy
 
-This simple project was meant to be an opportunity to play with a handful of enterprise technologies.  It is a reverse proxy written in Go with support for Redis caching, Prometheus metrics and distributed tracing.
+This simple project was meant to be an opportunity to play with a handful of enterprise technologies.  It is a reverse proxy written in Go with support for Redis caching, Prometheus metrics, rate limiting, and distributed tracing.
 
 ### Running the Application
 
@@ -54,6 +54,25 @@ proxy_1    | Ending Request http://backend:8080/api/echo?echo=test
 proxy_1    | 2019/07/10 02:39:58 HTTPRequest took 1.0331ms
 ```
 
+### Rate Limiting
+
+Execute a bunch of requests to test rate limiting.
+
+```
+$ curl http://localhost:8080/api/echo?echo=test
+test
+$ curl http://localhost:8080/api/echo?echo=test
+test
+$ curl http://localhost:8080/api/echo?echo=test
+test
+$ curl http://localhost:8080/api/echo?echo=test
+test
+$ curl http://localhost:8080/api/echo?echo=test
+test
+$ curl http://localhost:8080/api/echo?echo=test
+429 - Too Many Requests
+```
+
 ### Final Thoughts
 
 Overall this turned into a fun project that allowed for some basic exploration of go, caching, tracing and other technologies.  This code should never be used in any real world scenario.  However, if you're interested in doing similar things you may find some useful sample code buried in here.
@@ -62,6 +81,4 @@ Improvements that could be made:
 
 - Respect incoming OpenTracing headers
 - Set outgoing OpenTracing headers
-- Add distributed rate limiting through Redis
 - Make caching, tracing, etc. configurable
-- Only cache gets
