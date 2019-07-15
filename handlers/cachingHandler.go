@@ -30,6 +30,10 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 
 		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
+			if request.Method != "GET" {
+				return next(request, ctx)
+			}
+
 			key := genKey(request.URL)
 
 			span := ctx.Tracer.StartSpan("CacheGet", opentracing.ChildOf(ctx.CurrentSpan.Context()))
