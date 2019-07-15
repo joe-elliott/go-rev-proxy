@@ -12,15 +12,17 @@ import (
 )
 
 var (
-	proxyUrl      string
-	listenAddress string
-	redisAddress  string
+	proxyUrl          string
+	listenAddress     string
+	redisAddress      string
+	requestsPerMinute int
 )
 
 func init() {
 	flag.StringVar(&proxyUrl, "proxy-url", "http://localhost:8081", "The address to listen on for Prometheus scrapes.")
 	flag.StringVar(&listenAddress, "listen-address", ":8080", "The address to listen on for Prometheus scrapes.")
 	flag.StringVar(&redisAddress, "redis-address", "redis:6379", "The address to communicate to redis on.")
+	flag.IntVar(&requestsPerMinute, "requests-per-minute", 5, "The maximum requests per minute per host.")
 }
 
 func main() {
@@ -32,6 +34,7 @@ func main() {
 	transport.AddHandler(handlers.MetricsHandlerFactory())
 	transport.AddHandler(handlers.TimingHandlerFactory())
 	transport.AddHandler(handlers.LoggingHandlerFactory())
+	transport.AddHandler(handlers.RateLimitingHandlerFactory(redisAddress, int64(requestsPerMinute)))
 	transport.AddHandler(handlers.CachingHandlerFactory(redisAddress))
 	transport.BuildHandlers()
 

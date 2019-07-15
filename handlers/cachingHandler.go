@@ -34,7 +34,7 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 				return next(request, ctx)
 			}
 
-			key := genKey(request.URL)
+			key := genCacheKey(request.URL)
 
 			span := ctx.Tracer.StartSpan("CacheGet", opentracing.ChildOf(ctx.CurrentSpan.Context()))
 
@@ -74,6 +74,6 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 	}
 }
 
-func genKey(u *url.URL) string {
+func genCacheKey(u *url.URL) string {
 	return fmt.Sprintf("%v:%v", RedisCachePrefix, u)
 }
