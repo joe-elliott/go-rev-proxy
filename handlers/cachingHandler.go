@@ -14,15 +14,19 @@ import (
 	"github.com/opentracing/opentracing-go"
 )
 
+const (
+	RedisCachePrefix = "cache:"
+)
+
 func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 
-	return func(next proxy.TransportHandler) proxy.TransportHandler {
+	client := redis.NewClient(&redis.Options{
+		Addr:     cacheAddress,
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
-		client := redis.NewClient(&redis.Options{
-			Addr:     cacheAddress,
-			Password: "", // no password set
-			DB:       0,  // use default DB
-		})
+	return func(next proxy.TransportHandler) proxy.TransportHandler {
 
 		return func(request *http.Request, ctx *proxy.TransportHandlerContext) (*http.Response, error) {
 
@@ -67,5 +71,5 @@ func CachingHandlerFactory(cacheAddress string) proxy.TransportHandlerFactory {
 }
 
 func genKey(u *url.URL) string {
-	return fmt.Sprintf("%v", u)
+	return fmt.Sprintf("%v:%v", RedisCachePrefix, u)
 }
